@@ -22,7 +22,9 @@ cd $SRC_DIR
 
 BUILD_DIR=all-service/target
 
-cat ${QUARKUS_HOME}/.m2/configure.sh
+echo ahhahahahaahahhhhhhhhhhhhhhhhhAAAAAAAAAAAAAAAAAAAAA
+
+ls ${QUARKUS_HOME}/.m2/repository
 
 mvn install -f entities
 mvn install -f data-client -Dmaven.repo.local=${QUARKUS_HOME}/.m2/repository
