@@ -14,12 +14,36 @@ objects:
   metadata:
     labels:
       app: ${APPLICATION_NAME}
-    name: openjdk-11-rhel7
+    name: ubi-quarkus-native-s2i
   spec:
     tags:
     - from:
         kind: DockerImage
-        name: ${DOCKER_IMAGE_REPOSITORY}
+        name: quay.io/quarkus/ubi-quarkus-native-s2i:20.1.0-java11
+      name: 20.1.0-java11
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}-build
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: registry.access.redhat.com/ubi8-minimal
+      name: latest
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ubi-minimal
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: registry.access.redhat.com/ubi8-minimal
       name: latest
 - apiVersion: v1
   kind: Secret
@@ -43,13 +67,50 @@ objects:
   metadata:
     labels:
       app: ${APPLICATION_NAME}
+      app.kubernetes.io/component: ${APPLICATION_NAME}
+      app.kubernetes.io/instance: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}-build
+  spec:
+    resources:
+      limits:
+        memory: 1Gi
+        cpu: '1'
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${APPLICATION_NAME}-build:latest
+    source:
+      contextDir: ${SOURCE_REPOSITORY_DIR}
+      git:
+        ref: ${SOURCE_REPOSITORY_REF}
+        uri: ${SOURCE_REPOSITORY_URL}
+      type: Git
+    strategy:
+      sourceStrategy:
+        env:
+        - name: ARTIFACT_DIR
+          value: "all-service/target"
+        - name: ARTIFACT_COPY_ARGS
+          value: "-p -r lib/ *-runner.jar"
+        from:
+          kind: ImageStreamTag
+          name: ubi-quarkus-native-s2i:20.1.0-java11
+      type: Source
+    triggers:
+    - type: ConfigChange
+    - imageChange:
+      type: ImageChange
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
     name: ${APPLICATION_NAME}
   spec:
     output:
       to:
         kind: ImageStreamTag
         name: ${APPLICATION_NAME}:latest
-    resources: {}
     source:
       contextDir: ${SOURCE_REPOSITORY_DIR}
       git:
@@ -69,7 +130,7 @@ objects:
             value: ${USERS_LDAP_BASEDN}
         from:
           kind: ImageStreamTag
-          name: openjdk-11-rhel7:latest
+          name: ubi-quarkus-native-s2i:20.1.0-java11
       type: Source
     triggers:
     - type: GitHub
@@ -79,8 +140,6 @@ objects:
     - type: ConfigChange
     - imageChange: {}
       type: ImageChange
-  status:
-    lastVersion: 0
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
@@ -185,10 +244,6 @@ parameters:
     displayName: Source Directory
     value: quarkus
     required: true
-  - name: DOCKER_IMAGE_REPOSITORY
-    description: The image repository where the application is going to be built.
-    required: true
-    value: registry.access.redhat.com/openjdk/openjdk-11-rhel7:latest
   - name: USERS_LDAP_BASEDN
     description: Ldap basedn
     required: true
