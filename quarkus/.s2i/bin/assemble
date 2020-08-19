@@ -35,9 +35,9 @@ printf "\n"
 echo "#####################################################################"
 printf "\n"
 mvn package -f all-service -Pnative -e -B \
-    -DskipTests -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
-    -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true \
-    -Dmaven.repo.local=${QUARKUS_HOME}/.m2/repository -nsu
+-DskipTests -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
+-Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true \
+-Dmaven.repo.local=${QUARKUS_HOME}/.m2/repository -nsu
 
 cp -v ${BUILD_DIR}/*-runner ${QUARKUS_HOME}/application
 chmod +x ${QUARKUS_HOME}
