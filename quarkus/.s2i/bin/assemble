@@ -20,15 +20,19 @@ SRC_DIR=${SRC_DIR:-'/tmp/src/'}
 
 cd $SRC_DIR
 
+echo "#####################################################################"
+
+cat ${QUARKUS_HOME}/.m2/configure-maven.sh
+
+echo "#####################################################################"
+
+cat ${QUARKUS_HOME}/.m2/configure.sh
+
+echo "#####################################################################"
+
 BUILD_DIR=all-service/target
 
 mvn install -f entities
-
-echo ahhahahahaahahhhhhhhhhhhhhhhhhAAAAAAAAAAAAAAAAAAAAA
-
-ls ${QUARKUS_HOME}/.m2/repository/com/redhat/service/ninja/entities
-ls ${QUARKUS_HOME}/.m2/repository/com/redhat/service/ninja/entities/2.0.0-SNAPSHOT
-
 mvn install -f data-client -Dmaven.repo.local=${QUARKUS_HOME}/.m2/repository
 mvn package -f all-service -Pnative -e -B \
     -DskipTests -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
