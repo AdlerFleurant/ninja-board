@@ -20,8 +20,6 @@ SRC_DIR=${SRC_DIR:-'/tmp/src/'}
 
 cd $SRC_DIR
 
-mvn help:effective-settings -q -DforceStdout
-
 BUILD_DIR=all-service/target
 printf "\n"
 echo "#####################################################################"
@@ -30,7 +28,7 @@ mvn install -f entities -nsu
 printf "\n"
 echo "#####################################################################"
 printf "\n"
-mvn install -f data-client -Dmaven.repo.local=${QUARKUS_HOME}/.m2/repository -nsu
+mvn install -f data-client -Dmaven.repo.local=${QUARKUS_HOME}/.m2/repository -nsu -X
 printf "\n"
 echo "#####################################################################"
 printf "\n"
