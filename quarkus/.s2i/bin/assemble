@@ -25,7 +25,7 @@ BUILD_DIR=all-service/target
 cat ${QUARKUS_HOME}/.m2/configure.sh
 
 mvn install -f entities
-mvn install -f data-client
+mvn install -f data-client -Dmaven.repo.local=${QUARKUS_HOME}/.m2/repository
 mvn package -f all-service -Pnative -e -B \
     -DskipTests -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
     -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true \
