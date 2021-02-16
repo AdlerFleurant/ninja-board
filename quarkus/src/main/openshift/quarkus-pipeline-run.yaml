@@ -7,7 +7,7 @@ spec:
   - name: GIT_REPOSITORY
     value: 'https://github.com/AdlerFleurant/ninja-board.git'
   - name: GIT_REVISION
-    value: v2
+    value: native-build
   pipelineRef:
     name: quarkus-pipeline
   workspaces:
