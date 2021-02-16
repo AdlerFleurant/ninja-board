@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: quarkus-pipeline-
+spec:
+  params:
+  - name: GIT_REPOSITORY
+    value: 'https://github.com/AdlerFleurant/ninja-board.git'
+  - name: GIT_REVISION
+    value: v2
+  pipelineRef:
+    name: quarkus-pipeline
+  workspaces:
+  - name: source
+    volumeClaimTemplate:
+      metadata:
+        generateName: source-
+        labels:
+          for: quarkus-pipeline
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 500Mi
+  - name: maven-settings
+    emptyDir: {}

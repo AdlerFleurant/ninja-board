@@ -1,0 +1,53 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: quarkus-pipeline
+spec:
+  params:
+  - name: GIT_REPOSITORY
+    type: string
+    description: The repository to clone.
+    default: https://github.com/AdlerFleurant/ninja-board.git
+  - name: GIT_REVISION
+    type: string
+    description: the tag, branch or revision number to clone.
+    default: v2
+  tasks:
+  - name: fetch-repository
+    taskRef:
+      kind: ClusterTask
+      name: git-clone
+    params:
+    - name: url
+      value: $(params.GIT_REPOSITORY)
+    - name: revision
+      value: $(params.GIT_REVISION)
+    - name: deleteExisting
+      value: "true"
+    workspaces:
+    - name: output
+      workspace: source
+  - name: mvn-package-native
+    taskRef:
+      name: maven
+    runAfter:
+    - fetch-repository
+    params:
+    - name: CONTEXT_DIR
+      value: "quarkus"
+    - name: MAVEN_IMAGE
+      value: quay.io/quarkus/centos-quarkus-maven:21.0-java11
+    - name: GOALS
+      value:
+      - package
+      - -Pnative
+      - -Dquarkus.native.container-build=false
+      - -Dquarkus.container-image.build=false
+    workspaces:
+    - name: maven-settings
+      workspace: maven-settings
+    - name: source
+      workspace: source
+  workspaces:
+  - name: source
+  - name: maven-settings

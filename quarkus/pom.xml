@@ -9,11 +9,13 @@
     <packaging>pom</packaging>
 
     <properties>
-        <quarkus-plugin.version>1.6.0.Final</quarkus-plugin.version>
-        <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+        <quarkus-plugin.version>1.11.3.Final</quarkus-plugin.version>
+        <quarkus.platform.version>1.11.3.Final</quarkus.platform.version>
+        <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-        <quarkus.platform.version>1.6.0.Final</quarkus.platform.version>
-        <surefire-plugin.version>2.22.2</surefire-plugin.version>
+        <jandex-plugin.version>1.0.8</jandex-plugin.version>
+        <compiler-plugin.version>3.8.1</compiler-plugin.version>
+        <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
         <failsafe-plugin.version>2.22.2</failsafe-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -35,7 +37,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${compiler-plugin.version}</version>
                 <configuration>
                     <release>11</release>
                 </configuration>
